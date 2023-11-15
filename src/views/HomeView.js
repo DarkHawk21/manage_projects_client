@@ -1,8 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 
 function HomeView() {
-    const [ showModalCrearProyecto, setShowModalCrearProyecto ] = useState(false);
-    const [ showModalEditarProyecto, setShowModalEditarProyecto ] = useState(false);
+    const navigate = useNavigate();
+    const [showModalCrearProyecto, setShowModalCrearProyecto] = useState(false);
+    const [showModalEditarProyecto, setShowModalEditarProyecto] = useState(false);
+
+    useEffect(() => {
+        const token = localStorage.getItem('token-manage-projects');
+
+        if (!token) {
+            navigate('/login');
+        }
+    }, []);
 
     const buttonShowModalCreateClicked = () => {
         setShowModalCrearProyecto(true);
@@ -32,23 +42,23 @@ function HomeView() {
         <>
             {
                 showModalCrearProyecto
-                ? <section className="modal_propio">
+                    ? <section className="modal_propio">
                         <div className="modal_container">
                             <form>
                                 <h3 className='text-center mb-4'>Agregando proyecto</h3>
 
                                 <label>Nombre:</label>
                                 <input className="form-control" type="text" />
-        
+
                                 <label>Responsable:</label>
                                 <input className="form-control" type="text" />
-        
+
                                 <label>Descripción:</label>
                                 <input className="form-control" type="text" />
-        
+
                                 <label>Fecha de entrega:</label>
                                 <input className="form-control" type="date" />
-        
+
                                 <div className="modal_footer mt-2">
                                     <button type="button" className="btn btn-success me-2" onClick={buttonSaveModalCreateClicked}>Agregar</button>
                                     <button type="button" className="btn btn-danger" onClick={buttonCloseModalCreateClicked}>Cancelar</button>
@@ -56,28 +66,28 @@ function HomeView() {
                             </form>
                         </div>
                     </section>
-                : ''
+                    : ''
             }
 
             {
                 showModalEditarProyecto
-                ? <section className="modal_propio">
+                    ? <section className="modal_propio">
                         <div className="modal_container">
                             <form>
                                 <h3 className='text-center mb-4'>Editando proyecto</h3>
 
                                 <label>Nombre:</label>
                                 <input className="form-control" type="text" />
-        
+
                                 <label>Responsable:</label>
                                 <input className="form-control" type="text" />
-        
+
                                 <label>Descripción:</label>
                                 <input className="form-control" type="text" />
-        
+
                                 <label>Fecha de entrega:</label>
                                 <input className="form-control" type="date" />
-        
+
                                 <div className="modal_footer mt-2">
                                     <button type="button" className="btn btn-success me-2" onClick={buttonSaveModalEditClicked}>Guardar</button>
                                     <button type="button" className="btn btn-danger" onClick={buttonCloseModalEditClicked}>Cancelar</button>
@@ -85,7 +95,7 @@ function HomeView() {
                             </form>
                         </div>
                     </section>
-                : ''
+                    : ''
             }
 
             <div className="container p-5">

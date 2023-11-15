@@ -33,7 +33,7 @@ function RegisterView() {
                         </div>
 
                         <div className="text-center">
-                            <p className="text-white">¿Ya tienes una cuenta? <a href="#" className="text-white"><strong>Inicia sesión</strong></a></p>
+                            <p className="text-white">¿Ya tienes una cuenta? <a href="/login" className="text-white"><strong>Inicia sesión</strong></a></p>
                         </div>
                     </form>
                 </div>
