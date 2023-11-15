@@ -1,41 +1,44 @@
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import TaskComponent from '../components/TaskComponent';
 
-function HomeView() {
-    const [ showModalCrearProyecto, setShowModalCrearProyecto ] = useState(false);
-    const [ showModalEditarProyecto, setShowModalEditarProyecto ] = useState(false);
+function ProjectDetailView() {
+    let { proyectoId } = useParams();
+    const [ showModalCrearTarea, setShowModalCrearTarea ] = useState(false);
+    const [ showModalEditarTarea, setShowModalEditarTarea ] = useState(false);
 
     const buttonShowModalCreateClicked = () => {
-        setShowModalCrearProyecto(true);
+        setShowModalCrearTarea(true);
     };
 
     const buttonCloseModalCreateClicked = () => {
-        setShowModalCrearProyecto(false);
+        setShowModalCrearTarea(false);
     };
 
     const buttonSaveModalCreateClicked = () => {
         alert("Elemento nuevo guardado");
     };
 
-    const buttonShowModalEditClicked = () => {
-        setShowModalEditarProyecto(true);
-    };
-
     const buttonCloseModalEditClicked = () => {
-        setShowModalEditarProyecto(false);
+        setShowModalEditarTarea(false);
     };
 
     const buttonSaveModalEditClicked = () => {
         alert("Elemento existente guardado");
     };
 
+    const tareaAVista = () => {
+        setShowModalEditarTarea(true);
+    };
+
     return (
         <>
             {
-                showModalCrearProyecto
+                showModalCrearTarea
                 ? <section className="modal_propio">
                         <div className="modal_container">
                             <form>
-                                <h3 className='text-center mb-4'>Agregando proyecto</h3>
+                                <h3 className='text-center mb-4'>Agregando tarea</h3>
 
                                 <label>Nombre:</label>
                                 <input className="form-control" type="text" />
@@ -45,6 +48,14 @@ function HomeView() {
         
                                 <label>Descripción:</label>
                                 <input className="form-control" type="text" />
+
+                                <label>Estatus:</label>
+                                <select className="form-control">
+                                    <option value="">...</option>
+                                    <option value="planeacion">En planeación</option>
+                                    <option value="proceso">En proceso</option>
+                                    <option value="finalizada">Finalizada</option>
+                                </select>
         
                                 <label>Fecha de entrega:</label>
                                 <input className="form-control" type="date" />
@@ -60,11 +71,11 @@ function HomeView() {
             }
 
             {
-                showModalEditarProyecto
+                showModalEditarTarea
                 ? <section className="modal_propio">
                         <div className="modal_container">
                             <form>
-                                <h3 className='text-center mb-4'>Editando proyecto</h3>
+                                <h3 className='text-center mb-4'>Editando tarea</h3>
 
                                 <label>Nombre:</label>
                                 <input className="form-control" type="text" />
@@ -74,6 +85,14 @@ function HomeView() {
         
                                 <label>Descripción:</label>
                                 <input className="form-control" type="text" />
+
+                                <label>Estatus:</label>
+                                <select className="form-control">
+                                    <option value="">...</option>
+                                    <option value="planeacion">En planeación</option>
+                                    <option value="proceso">En proceso</option>
+                                    <option value="finalizada">Finalizada</option>
+                                </select>
         
                                 <label>Fecha de entrega:</label>
                                 <input className="form-control" type="date" />
@@ -89,34 +108,22 @@ function HomeView() {
             }
 
             <div className="container p-5">
-                <h1 className="title text-center">Proyectos</h1>
+                <h1 className="title text-center">Nombre del proyecto { proyectoId }</h1>
+                <h3 className="text-center">Enrique Carranza</h3>
+                <h5 className="text-center mt-4 mb-4">80% completado</h5>
+                <p>Aquí iría la descripción del proyecto.</p>
+                <p><b>Total de tareas:</b> 10</p>
+                <p><b>Tareas completadas:</b> 8</p>
+                <p><b>Fecha de entrega:</b> 15 de Noviembre de 2023</p>
 
                 <div className="text-center">
-                    <button className="btn btn-success mt-4 mb-5" onClick={buttonShowModalCreateClicked}>Crear proyecto</button>
+                    <button className="btn btn-success mt-4 mb-5 me-2" onClick={buttonShowModalCreateClicked}>Crear tarea</button>
+                    <a href="/" className="btn btn-primary mt-4 mb-5">Regresar</a>
                 </div>
 
                 <div className="row">
                     <div className="col-4">
-                        <div className="card">
-                            <div className="card-header">
-                                <h5 className="card-title text-center">Nombre del proyecto</h5>
-                                <h6 className="text-center">Enrique Carranza</h6>
-                            </div>
-
-                            <div className="card-body">
-                                <h5 className="text-center mt-4 mb-4">80% completado</h5>
-                                <p className="card-text">Aquí iría la descripción del proyecto.</p>
-                                <p className="card-text"><b>Total de tareas:</b> 10</p>
-                                <p className="card-text"><b>Tareas completadas:</b> 8</p>
-                                <p className="card-text"><b>Fecha de entrega:</b> 15 de Noviembre de 2023</p>
-                            </div>
-
-                            <div className="card-footer text-center p-3">
-                                <button className="btn btn-primary me-2" onClick={buttonShowModalEditClicked}>Editar</button>
-                                <a href="/proyecto/2" className="btn btn-success">Ver detalle</a>
-                                <a href="/" className="btn btn-danger ms-2">Eliminar</a>
-                            </div>
-                        </div>
+                        <TaskComponent tareaAVista={tareaAVista}/>
                     </div>
                 </div>
             </div>
@@ -124,4 +131,4 @@ function HomeView() {
     );
 }
 
-export default HomeView;
+export default ProjectDetailView;
