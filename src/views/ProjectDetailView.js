@@ -37,7 +37,27 @@ function ProjectDetailView() {
         setShowModalEditarTarea(true);
     };
 
-    const buttonDeleteTareaClicked = () => {};
+    const buttonDeleteTareaClicked = async (tarea) => {
+        if (window.confirm("¿Estás seguro de eliminar la tarea?")) {
+            try {
+                const url = `http://localhost:8000/api/tareas/${tarea.id}`;
+
+                const opciones = {
+                    method: 'DELETE',
+                    header:{
+                        'Accept' : 'application/json',
+                        'Content-Type' : 'application/json'
+                    },
+                };
+
+                await fetch(url, opciones);
+                obtenerDetalleProyecto();
+            } catch (error) {
+                alert("Hubo un error.");
+                console.log(error);
+            }
+        }
+    };
 
     const cerrarModalCrear = (tareaCreada = false) => {
         if (tareaCreada) {
