@@ -4,6 +4,7 @@ import 'moment/locale/es-mx';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import TaskComponent from '../components/TaskComponent';
+import ModalCrearTarea from '../components/ModalCrearTarea';
 
 function ProjectDetailView() {
     const navigate = useNavigate();
@@ -38,6 +39,14 @@ function ProjectDetailView() {
 
     const buttonDeleteTareaClicked = () => {};
 
+    const cerrarModalCrear = (tareaCreada = false) => {
+        if (tareaCreada) {
+            obtenerDetalleProyecto();
+        }
+
+        setShowModalCrearTarea(false);
+    };
+
     const buttonShowModalCreateClicked = () => {
         setShowModalCrearTarea(true);
     };
@@ -62,38 +71,10 @@ function ProjectDetailView() {
         <>
             {
                 showModalCrearTarea
-                ? <section className="modal_propio">
-                        <div className="modal_container">
-                            <form>
-                                <h3 className='text-center mb-4'>Agregando tarea</h3>
-
-                                <label>Nombre:</label>
-                                <input className="form-control" type="text" />
-        
-                                <label>Responsable:</label>
-                                <input className="form-control" type="text" />
-        
-                                <label>Descripción:</label>
-                                <input className="form-control" type="text" />
-
-                                <label>Estatus:</label>
-                                <select className="form-control">
-                                    <option value="">...</option>
-                                    <option value="planeacion">En planeación</option>
-                                    <option value="proceso">En proceso</option>
-                                    <option value="finalizada">Finalizada</option>
-                                </select>
-        
-                                <label>Fecha de entrega:</label>
-                                <input className="form-control" type="date" />
-        
-                                <div className="modal_footer mt-2">
-                                    <button type="button" className="btn btn-success me-2" onClick={buttonSaveModalCreateClicked}>Agregar</button>
-                                    <button type="button" className="btn btn-danger" onClick={buttonCloseModalCreateClicked}>Cancelar</button>
-                                </div>
-                            </form>
-                        </div>
-                    </section>
+                ? <ModalCrearTarea
+                    proyectoId={proyectoId}
+                    cerrarModalCrear={cerrarModalCrear}
+                    />
                 : ''
             }
 
