@@ -48,7 +48,7 @@ function ModalEditarProyecto({ proyecto, cerrarModalEdit }) {
                 console.log(error);
             }
         },
-        []
+        [cerrarModalEdit, proyecto]
     );
 
     return (
