@@ -1,8 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
+import ProjectComponent from '../components/ProjectComponent';
+import ModalCrearProyecto from '../components/ModalCrearProyecto';
+import ModalEditarProyecto from '../components/ModalEditarProyecto';
 
 function HomeView() {
     const navigate = useNavigate();
+    const [proyectos, setProyectos] = useState([]);
+    const [proyectoSeleccionado, setProyectoSeleccionado] = useState({});
     const [showModalCrearProyecto, setShowModalCrearProyecto] = useState(false);
     const [showModalEditarProyecto, setShowModalEditarProyecto] = useState(false);
 
@@ -12,89 +17,81 @@ function HomeView() {
         if (!token) {
             navigate('/login');
         }
-    }, []);
+
+        obtenerProyectos();
+    }, [navigate]);
+
+    const obtenerProyectos = async () => {
+        const url = 'http://localhost:8000/api/proyectos';
+
+        const response = await fetch(url);
+        const proyectosResponse = await response.json();
+        setProyectos(proyectosResponse);
+    };
+
+    const cerrarModalEdit = (proyectoEditado = false) => {
+        if (proyectoEditado) {
+            obtenerProyectos();
+        }
+
+        setShowModalEditarProyecto(false);
+    };
+
+    const cerrarModalCrear = (proyectoCreado = false) => {
+        if (proyectoCreado) {
+            obtenerProyectos();
+        }
+
+        setShowModalCrearProyecto(false);
+    };
 
     const buttonShowModalCreateClicked = () => {
         setShowModalCrearProyecto(true);
     };
-
-    const buttonCloseModalCreateClicked = () => {
-        setShowModalCrearProyecto(false);
-    };
-
-    const buttonSaveModalCreateClicked = () => {
-        alert("Elemento nuevo guardado");
-    };
-
-    const buttonShowModalEditClicked = () => {
+    
+    const buttonShowModalEditClicked = (proyecto) => {
         setShowModalEditarProyecto(true);
+        setProyectoSeleccionado(proyecto);
     };
 
-    const buttonCloseModalEditClicked = () => {
-        setShowModalEditarProyecto(false);
-    };
+    const buttonDeleteProjectClicked = async (proyecto) => {
+        if (window.confirm("¿Estás seguro de eliminar el proyecto y todas sus tareas?")) {
+            try {
+                const url = `http://localhost:8000/api/proyectos/${proyecto.id}`;
 
-    const buttonSaveModalEditClicked = () => {
-        alert("Elemento existente guardado");
+                const opciones = {
+                    method: 'DELETE',
+                    header:{
+                        'Accept' : 'application/json',
+                        'Content-Type' : 'application/json'
+                    },
+                };
+
+                await fetch(url, opciones);
+                obtenerProyectos();
+            } catch (error) {
+                alert("Hubo un error.");
+                console.log(error);
+            }
+        }
     };
 
     return (
         <>
-            {
+            { 
                 showModalCrearProyecto
-                    ? <section className="modal_propio">
-                        <div className="modal_container">
-                            <form>
-                                <h3 className='text-center mb-4'>Agregando proyecto</h3>
-
-                                <label>Nombre:</label>
-                                <input className="form-control" type="text" />
-
-                                <label>Responsable:</label>
-                                <input className="form-control" type="text" />
-
-                                <label>Descripción:</label>
-                                <input className="form-control" type="text" />
-
-                                <label>Fecha de entrega:</label>
-                                <input className="form-control" type="date" />
-
-                                <div className="modal_footer mt-2">
-                                    <button type="button" className="btn btn-success me-2" onClick={buttonSaveModalCreateClicked}>Agregar</button>
-                                    <button type="button" className="btn btn-danger" onClick={buttonCloseModalCreateClicked}>Cancelar</button>
-                                </div>
-                            </form>
-                        </div>
-                    </section>
+                    ? <ModalCrearProyecto
+                        cerrarModalCrear={cerrarModalCrear}
+                        /> 
                     : ''
             }
 
-            {
+            { 
                 showModalEditarProyecto
-                    ? <section className="modal_propio">
-                        <div className="modal_container">
-                            <form>
-                                <h3 className='text-center mb-4'>Editando proyecto</h3>
-
-                                <label>Nombre:</label>
-                                <input className="form-control" type="text" />
-
-                                <label>Responsable:</label>
-                                <input className="form-control" type="text" />
-
-                                <label>Descripción:</label>
-                                <input className="form-control" type="text" />
-
-                                <label>Fecha de entrega:</label>
-                                <input className="form-control" type="date" />
-
-                                <div className="modal_footer mt-2">
-                                    <button type="button" className="btn btn-success me-2" onClick={buttonSaveModalEditClicked}>Guardar</button>
-                                    <button type="button" className="btn btn-danger" onClick={buttonCloseModalEditClicked}>Cancelar</button>
-                                </div>
-                            </form>
-                        </div>
-                    </section>
+                    ? <ModalEditarProyecto
+                            proyecto={proyectoSeleccionado}
+                            cerrarModalEdit={cerrarModalEdit}
+                        />
                     : ''
             }
 
@@ -106,28 +103,17 @@ function HomeView() {
                 </div>
 
                 <div className="row">
-                    <div className="col-4">
-                        <div className="card">
-                            <div className="card-header">
-                                <h5 className="card-title text-center">Nombre del proyecto</h5>
-                                <h6 className="text-center">Enrique Carranza</h6>
-                            </div>
-
-                            <div className="card-body">
-                                <h5 className="text-center mt-4 mb-4">80% completado</h5>
-                                <p className="card-text">Aquí iría la descripción del proyecto.</p>
-                                <p className="card-text"><b>Total de tareas:</b> 10</p>
-                                <p className="card-text"><b>Tareas completadas:</b> 8</p>
-                                <p className="card-text"><b>Fecha de entrega:</b> 15 de Noviembre de 2023</p>
-                            </div>
-
-                            <div className="card-footer text-center p-3">
-                                <button className="btn btn-primary me-2" onClick={buttonShowModalEditClicked}>Editar</button>
-                                <a href="/proyecto/2" className="btn btn-success">Ver detalle</a>
-                                <a href="/" className="btn btn-danger ms-2">Eliminar</a>
-                            </div>
-                        </div>
-                    </div>
+                    { 
+                        proyectos.map(proyecto => {
+                            return <div className="col-4" key={proyecto.id}>
+                                <ProjectComponent
+                                    proyecto={proyecto}
+                                    buttonShowModalEditClicked={buttonShowModalEditClicked}
+                                    buttonDeleteProjectClicked={buttonDeleteProjectClicked}
+                                />
+                            </div>;
+                        })
+                    }
                 </div>
             </div>
         </>
