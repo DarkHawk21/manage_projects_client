@@ -1,11 +1,42 @@
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import Moment from 'react-moment';
+import 'moment/locale/es-mx';
+
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import TaskComponent from '../components/TaskComponent';
 
 function ProjectDetailView() {
+    const navigate = useNavigate();
     let { proyectoId } = useParams();
+    const [ proyecto, setProyecto ] = useState({});
+    const [ tareas, setTareas ] = useState([]);
     const [ showModalCrearTarea, setShowModalCrearTarea ] = useState(false);
     const [ showModalEditarTarea, setShowModalEditarTarea ] = useState(false);
+
+    useEffect(() => {
+        const token = localStorage.getItem('token-manage-projects');
+
+        if (!token) {
+            navigate('/login');
+        }
+
+        obtenerDetalleProyecto();
+    }, [navigate]);
+
+    const obtenerDetalleProyecto = async () => {
+        const url = `http://localhost:8000/api/proyectos/${proyectoId}`;
+
+        const response = await fetch(url);
+        const detalleResponse = await response.json();
+        setProyecto(detalleResponse);
+        setTareas(detalleResponse.tareas);
+    };
+
+    const buttonShowModalEditClicked = () => {
+        setShowModalEditarTarea(true);
+    };
+
+    const buttonDeleteTareaClicked = () => {};
 
     const buttonShowModalCreateClicked = () => {
         setShowModalCrearTarea(true);
@@ -25,10 +56,6 @@ function ProjectDetailView() {
 
     const buttonSaveModalEditClicked = () => {
         alert("Elemento existente guardado");
-    };
-
-    const tareaAVista = () => {
-        setShowModalEditarTarea(true);
     };
 
     return (
@@ -108,13 +135,19 @@ function ProjectDetailView() {
             }
 
             <div className="container p-5">
-                <h1 className="title text-center">Nombre del proyecto { proyectoId }</h1>
-                <h3 className="text-center">Enrique Carranza</h3>
-                <h5 className="text-center mt-4 mb-4">80% completado</h5>
-                <p>Aquí iría la descripción del proyecto.</p>
-                <p><b>Total de tareas:</b> 10</p>
-                <p><b>Tareas completadas:</b> 8</p>
-                <p><b>Fecha de entrega:</b> 15 de Noviembre de 2023</p>
+                <h1 className="title text-center">{proyecto.nombre}</h1>
+                <h3 className="text-center">{proyecto.responsable?.name}</h3>
+                <h5 className="text-center mt-4 mb-4">
+                    {
+                        proyecto.tareas_resumen?.total > 0
+                            ? Math.round((proyecto.tareas_resumen?.finalizadas * 100) / proyecto.tareas_resumen?.total)
+                            : 0
+                    }% completado
+                </h5>
+                <p>{proyecto.descripcion}</p>
+                <p><b>Total de tareas:</b> {proyecto.tareas_resumen?.total}</p>
+                <p><b>Tareas completadas:</b> {proyecto.tareas_resumen?.finalizadas}</p>
+                <p><b>Fecha de entrega:</b> <Moment format='LL' locale="es">{proyecto.fecha_entrega}</Moment></p>
 
                 <div className="text-center">
                     <button className="btn btn-success mt-4 mb-5 me-2" onClick={buttonShowModalCreateClicked}>Crear tarea</button>
@@ -122,9 +155,17 @@ function ProjectDetailView() {
                 </div>
 
                 <div className="row">
-                    <div className="col-4">
-                        <TaskComponent tareaAVista={tareaAVista}/>
-                    </div>
+                    { 
+                        tareas.map(tarea => {
+                            return <div className="col-4" key={tarea.id}>
+                                <TaskComponent
+                                    tarea={tarea}
+                                    buttonShowModalEditClicked={buttonShowModalEditClicked}
+                                    buttonDeleteTareaClicked={buttonDeleteTareaClicked}
+                                />
+                            </div>;
+                        })
+                    }
                 </div>
             </div>
         </>
