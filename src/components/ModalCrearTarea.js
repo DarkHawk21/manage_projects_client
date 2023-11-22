@@ -13,7 +13,7 @@ function ModalCrearTarea({ cerrarModalCrear, proyectoId }) {
     }, []);
 
     const obtenerUsuarios = async () => {
-        const url = 'http://localhost:8000/api/usuarios';
+        const url = 'https://app-manage-projects-api-f71121111459.herokuapp.com/public/api/usuarios';
 
         const response = await fetch(url);
         const usuariosResponse = await response.json();
@@ -33,7 +33,7 @@ function ModalCrearTarea({ cerrarModalCrear, proyectoId }) {
                 formData.append('proyecto_id', proyectoId);
                 formData.append('estatus_id', inputEstatus.current?.value);
 
-                const url = 'http://localhost:8000/api/tareas';
+                const url = 'https://app-manage-projects-api-f71121111459.herokuapp.com/public/api/tareas';
 
                 const opciones = {
                     method: 'POST',

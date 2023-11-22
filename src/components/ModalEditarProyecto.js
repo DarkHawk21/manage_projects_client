@@ -12,7 +12,7 @@ function ModalEditarProyecto({ proyecto, cerrarModalEdit }) {
     }, []);
 
     const obtenerUsuarios = async () => {
-        const url = 'http://localhost:8000/api/usuarios';
+        const url = 'https://app-manage-projects-api-f71121111459.herokuapp.com/public/api/usuarios';
 
         const response = await fetch(url);
         const usuariosResponse = await response.json();
@@ -30,7 +30,7 @@ function ModalEditarProyecto({ proyecto, cerrarModalEdit }) {
                 formData.append('fecha_entrega', inputFechaEntrega.current.value);
                 formData.append('responsable_id', inputResponsable.current.value);
 
-                const url = `http://localhost:8000/api/proyectos-update/${proyecto.id}`;
+                const url = `https://app-manage-projects-api-f71121111459.herokuapp.com/public/api/proyectos-update/${proyecto.id}`;
 
                 const opciones = {
                     method: 'POST',

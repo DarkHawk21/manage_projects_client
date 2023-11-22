@@ -27,7 +27,7 @@ function ProjectDetailView() {
     }, [navigate]);
 
     const obtenerDetalleProyecto = async () => {
-        const url = `http://localhost:8000/api/proyectos/${proyectoId}`;
+        const url = `https://app-manage-projects-api-f71121111459.herokuapp.com/public/api/proyectos/${proyectoId}`;
 
         const response = await fetch(url);
         const detalleResponse = await response.json();
@@ -43,7 +43,7 @@ function ProjectDetailView() {
     const buttonDeleteTareaClicked = async (tarea) => {
         if (window.confirm("¿Estás seguro de eliminar la tarea?")) {
             try {
-                const url = `http://localhost:8000/api/tareas/${tarea.id}`;
+                const url = `https://app-manage-projects-api-f71121111459.herokuapp.com/public/api/tareas/${tarea.id}`;
 
                 const opciones = {
                     method: 'DELETE',

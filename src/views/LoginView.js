@@ -15,7 +15,7 @@ function LoginView() {
                 formData.append('email', emailInputElement.current?.value);
                 formData.append('password', passwordInputElement.current?.value);
 
-                const url = 'http://localhost:8000/api/auth/login';
+                const url = 'https://app-manage-projects-api-f71121111459.herokuapp.com/public/api/auth/login';
 
                 const opciones = {
                     method: 'POST',

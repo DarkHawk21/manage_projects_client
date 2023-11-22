@@ -19,7 +19,7 @@ function RegisterView() {
                 formData.append('password', passwordInputElement.current?.value);
                 formData.append('password_confirmation', passwordConfirmationInputElement.current?.value);
 
-                const url = 'http://localhost:8000/api/auth/register';
+                const url = 'https://app-manage-projects-api-f71121111459.herokuapp.com/public/api/auth/register';
 
                 const opciones = {
                     method: 'POST',
