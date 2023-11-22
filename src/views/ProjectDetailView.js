@@ -5,12 +5,14 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import TaskComponent from '../components/TaskComponent';
 import ModalCrearTarea from '../components/ModalCrearTarea';
+import ModalEditarTarea from '../components/ModalEditarTarea';
 
 function ProjectDetailView() {
     const navigate = useNavigate();
     let { proyectoId } = useParams();
-    const [ proyecto, setProyecto ] = useState({});
+    const [ tarea, setTarea ] = useState({});
     const [ tareas, setTareas ] = useState([]);
+    const [ proyecto, setProyecto ] = useState({});
     const [ showModalCrearTarea, setShowModalCrearTarea ] = useState(false);
     const [ showModalEditarTarea, setShowModalEditarTarea ] = useState(false);
 
@@ -33,7 +35,8 @@ function ProjectDetailView() {
         setTareas(detalleResponse.tareas);
     };
 
-    const buttonShowModalEditClicked = () => {
+    const buttonShowModalEditClicked = (tarea) => {
+        setTarea(tarea);
         setShowModalEditarTarea(true);
     };
 
@@ -71,20 +74,12 @@ function ProjectDetailView() {
         setShowModalCrearTarea(true);
     };
 
-    const buttonCloseModalCreateClicked = () => {
-        setShowModalCrearTarea(false);
-    };
+    const cerrarModalEdit = (tareaEditada = false) => {
+        if (tareaEditada) {
+            obtenerDetalleProyecto();
+        }
 
-    const buttonSaveModalCreateClicked = () => {
-        alert("Elemento nuevo guardado");
-    };
-
-    const buttonCloseModalEditClicked = () => {
         setShowModalEditarTarea(false);
-    };
-
-    const buttonSaveModalEditClicked = () => {
-        alert("Elemento existente guardado");
     };
 
     return (
@@ -100,38 +95,11 @@ function ProjectDetailView() {
 
             {
                 showModalEditarTarea
-                ? <section className="modal_propio">
-                        <div className="modal_container">
-                            <form>
-                                <h3 className='text-center mb-4'>Editando tarea</h3>
-
-                                <label>Nombre:</label>
-                                <input className="form-control" type="text" />
-        
-                                <label>Responsable:</label>
-                                <input className="form-control" type="text" />
-        
-                                <label>Descripción:</label>
-                                <input className="form-control" type="text" />
-
-                                <label>Estatus:</label>
-                                <select className="form-control">
-                                    <option value="">...</option>
-                                    <option value="planeacion">En planeación</option>
-                                    <option value="proceso">En proceso</option>
-                                    <option value="finalizada">Finalizada</option>
-                                </select>
-        
-                                <label>Fecha de entrega:</label>
-                                <input className="form-control" type="date" />
-        
-                                <div className="modal_footer mt-2">
-                                    <button type="button" className="btn btn-success me-2" onClick={buttonSaveModalEditClicked}>Guardar</button>
-                                    <button type="button" className="btn btn-danger" onClick={buttonCloseModalEditClicked}>Cancelar</button>
-                                </div>
-                            </form>
-                        </div>
-                    </section>
+                ? <ModalEditarTarea
+                    tarea={tarea}
+                    proyectoId={proyectoId}
+                    cerrarModalEdit={cerrarModalEdit}
+                    />
                 : ''
             }
 
