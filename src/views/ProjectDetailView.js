@@ -1,9 +1,11 @@
 import Moment from 'react-moment';
 import 'moment/locale/es-mx';
 
+import { isExpired } from "react-jwt";
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import TaskComponent from '../components/TaskComponent';
+import HeaderComponent from '../components/HeaderComponent';
 import ModalCrearTarea from '../components/ModalCrearTarea';
 import ModalEditarTarea from '../components/ModalEditarTarea';
 
@@ -19,7 +21,8 @@ function ProjectDetailView() {
     useEffect(() => {
         const token = localStorage.getItem('token-manage-projects');
 
-        if (!token) {
+        if (!token || isExpired(token)) {
+            localStorage.removeItem('token-manage-projects');
             navigate('/login');
         }
 
@@ -102,6 +105,8 @@ function ProjectDetailView() {
                     />
                 : ''
             }
+
+            <HeaderComponent/>
 
             <div className="container p-5">
                 <h1 className="title text-center">{proyecto.nombre}</h1>

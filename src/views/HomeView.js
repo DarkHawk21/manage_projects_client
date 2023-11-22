@@ -1,5 +1,7 @@
+import { isExpired } from "react-jwt";
 import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
+import HeaderComponent from '../components/HeaderComponent';
 import ProjectComponent from '../components/ProjectComponent';
 import ModalCrearProyecto from '../components/ModalCrearProyecto';
 import ModalEditarProyecto from '../components/ModalEditarProyecto';
@@ -14,7 +16,8 @@ function HomeView() {
     useEffect(() => {
         const token = localStorage.getItem('token-manage-projects');
 
-        if (!token) {
+        if (!token || isExpired(token)) {
+            localStorage.removeItem('token-manage-projects');
             navigate('/login');
         }
 
@@ -94,6 +97,8 @@ function HomeView() {
                         />
                     : ''
             }
+
+            <HeaderComponent/>
 
             <div className="container p-5">
                 <h1 className="title text-center">Proyectos</h1>
